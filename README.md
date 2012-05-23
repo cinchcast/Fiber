@@ -117,7 +117,7 @@ Let's look at each line in detail.
 Dog.prototype = new Animal();
 ```
 
-This forces the `Dog`'s prototype to be a new instance of `Animal`, which means that every `Dog` *constructor* instance will be an instance of `Animal`. Why do it like that? Recall that in JavaScript objects are produced by constructor functions.  Therfore, by assigning `new constructor()` to the prototype, where *constructor* is a function, the JavaScript engine creates a new object with a link to inherit properties from the constructor.  Additionally, it applies the constructor function to it, and returns the value returned by the constructor (if it does indeed return a value), which brings us to the next section.
+This forces the `Dog`'s prototype to be a new instance of `Animal`, which means that every `Dog` *constructor* instance will be an instance of `Animal`. Why do it like that? Recall that in JavaScript objects are produced by constructor functions.  Therefore, by assigning `new constructor()` to the prototype, where *constructor* is a function, the JavaScript engine creates a new object with a link to inherit properties from the constructor.  Additionally, it applies the constructor function to it, and returns the value returned by the constructor (if it does indeed return a value), which brings us to the next section.
 
 ##### Constructor property
 
@@ -138,7 +138,7 @@ function Animal() {}
 console.log( Animal.prototype.constructor === Animal ); // true
 ```
 
-Why is this intersting?  Well, often, you'll this type of object construction:
+Why is this intersting?  Well, often, you'll see this type of object construction:
 
 ```javascript
 function Animal() {};
