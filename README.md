@@ -111,32 +111,34 @@ Dog.prototype = new Animal();
 Dog.prototype.constructor = Dog;
 ```
 
-Let's look at each line in detail:
+Let's look at each line in detail.
 
 ```
 Dog.prototype = new Animal();
 ```
 
-This forces the Dog's prototype to be a new instance of Animal. Essentially, it makes every Dog *constructor* instance an instance of Animal. Why do it like that? Recall that in JavaScript, objects are produced by constructor functions.  Therfore, by assigning `new constructor()` to the prototype, where constructor is a function, the JavaScript engine creates a new object with a link to inherit properties from the constructor.  Additionally, it applies the constructor function to it (more on this below), and returns the value returned by the constructor (if it returns a value).
+This forces the `Dog`'s prototype to be a new instance of `Animal`, which means that every `Dog` *constructor* instance will be an instance of `Animal`. Why do it like that? Recall that in JavaScript objects are produced by constructor functions.  Therfore, by assigning `new constructor()` to the prototype, where *constructor* is a function, the JavaScript engine creates a new object with a link to inherit properties from the constructor.  Additionally, it applies the constructor function to it, and returns the value returned by the constructor (if it does indeed return a value), which brings us to the next section.
+
+##### Constructor property
 
 ```javascript
 Dog.prototype.constructor = Dog;
 ```
 
-Whenever a function object is created, the `Function` constructor that produces the function object also assigns it a property named `prototype`, itself holding a single property named `constructor` whose value is the newly created function object.  In other words, whenever you create a function, the JavaScript engine performs the following code:
+To understand the above, note that whenever a function object is created, the `Function` constructor that produces the function object also assigns it a property named `prototype`, itself holding a single property named `constructor` whose value is the newly created function object.  In other words, whenever you create a function, the JavaScript engine performs the following code:
 
 ```javascript
 this.prototype = { constructor: this };
 ```
 
-Therefore you can do something like
+Try it out, run the following code:
 
 ```javascript
 function Animal() {}
 console.log( Animal.prototype.constructor === Animal ); // true
 ```
 
-This is quite interesting.  Often, you'll this type of object construction:
+Why is this intersting?  Well, often, you'll this type of object construction:
 
 ```javascript
 function Animal() {};
@@ -146,7 +148,7 @@ Animal.prototype = {
 }
 ```
 
-Now, that's great; however, you've replaced the prototype, and therefore you've essentially lost the constructor property!  A better approach would perhaps be:
+Now, that's great; however, you've essentially replaced the prototype, and therefore you've lost the constructor property!  A better approach would perhaps be:
 
 ```javascript
 Animal.prototype.method1 = function() {}
@@ -163,7 +165,7 @@ Animal.prototype = {
 Animal.prototype.constructor = Animal;  // Add the constructor manually
 ```
 
-or
+or maybe
 
 ```javascript
 Animal.prototype = {
