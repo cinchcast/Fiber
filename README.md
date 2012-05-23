@@ -177,7 +177,7 @@ Animal.prototype = {
 
 ##### Seriously, do we even need the constructor property?
 
-As far as the JavaScript engine is concerned, the constructor property makes absolutely no practical difference to it. It's only useful if **your** code explicitly needs it (for example, if you need each of your instances to have a reference to the actual constructor function that created it).
+As far as the JavaScript engine is concerned, the constructor property makes absolutely no difference to it. It's only useful if **your** code explicitly needs it (for example, if you need each of your instances to have a reference to the actual constructor function that created it).
 
 Frankly, one could do without the `constructor` property.  In most cases you should only be concerned about the `prototype` property.
 
