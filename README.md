@@ -119,26 +119,26 @@ Dog.prototype = new Animal();
 
 This forces the Dog's prototype to be a new instance of Animal. Essentially, it makes every Dog *constructor* instance an instance of Animal. Why do it like that? Recall that in JavaScript, objects are produced by constructor functions.  Therfore, by assigning `new constructor()` to the prototype, where constructor is a function, the JavaScript engine creates a new object with a link to inherit properties from the constructor.  Additionally, it applies the constructor function to it (more on this below), and returns the value returned by the constructor (if it returns a value).
 
-```
+```javascript
 Dog.prototype.constructor = Dog;
 ```
 
 Whenever a function object is created, the `Function` constructor that produces the function object also assigns it a property named `prototype`, itself holding a single property named `constructor` whose value is the newly created function object.  In other words, whenever you create a function, the JavaScript engine performs the following code:
 
-```
+```javascript
 this.prototype = { constructor: this };
 ```
 
 Therefore you can do something like
 
-```
+```javascript
 function Animal() {}
 console.log( Animal.prototype.constructor === Animal ); // true
 ```
 
 This is quite interesting.  Often, you'll this type of object construction:
 
-```
+```javascript
 function Animal() {};
 Animal.prototype = {
     method1: function() {},
@@ -148,14 +148,14 @@ Animal.prototype = {
 
 Now, that's great; however, you've replaced the prototype, and therefore you've essentially lost the constructor property!  A better approach would perhaps be:
 
-```
+```javascript
 Animal.prototype.method1 = function() {}
 Animal.prototype.method2 = function() {}
 ```
 
 which means you have not replaced the prototype, and thus the constructor property still exists.  Nonetheless, if you'd like to remain concise in your object definition, you can still take the object literal assignment approach, and add the constructor manually:
 
-```
+```javascript
 Animal.prototype = {
     method1: function() {},
     method2: function() {}
@@ -165,7 +165,7 @@ Animal.prototype.constructor = Animal;  // Add the constructor manually
 
 or
 
-```
+```javascript
 Animal.prototype = {
     constructor: Animal,
     method1: function() {},
