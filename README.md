@@ -1,6 +1,8 @@
 Class
 =====
 
+*(Note: I realize "Class" isn't a very original name, so if you have any suggestions, let me know! Yes indeed, credit will be given)*
+
 This inheritiance model, I think, is best explained with code.
 
 Let's define an Animal class:
