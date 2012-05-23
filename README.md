@@ -1,0 +1,4 @@
+Class
+=====
+
+JavaScript Inheritance
