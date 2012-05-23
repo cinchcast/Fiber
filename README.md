@@ -125,7 +125,9 @@ This forces the `Dog`'s prototype to be a new instance of `Animal`, which means 
 Dog.prototype.constructor = Dog;
 ```
 
-To understand the above, note that whenever a function object is created, the `Function` constructor that produces the function object also assigns it a property named `prototype`, itself holding a single property named `constructor` whose value is the newly created function object.  In other words, whenever you create a function, the JavaScript engine performs the following code:
+JavaScript makes no distinction between constructors and other functions, so every function gets a prototype property. That is, given a function `f`, javascript does not know whether you intend to use it as `new f()` (constructor), or `f()` (simple function execution).
+
+Therefore, whenever a function object is created, the `Function` constructor that produces the function object also assigns it a property named `prototype`, which in turn has a single property named `constructor` pointing back to the created function object.  So, whenever you create a function, JavaScript automatically does the following:
 
 ```javascript
 this.prototype = { constructor: this };
@@ -136,9 +138,12 @@ Try it out, run the following code:
 ```javascript
 function Animal() {}
 console.log( Animal.prototype.constructor === Animal ); // true
+
+var a = new Animal();
+console.log ( a.constructor === Animal ); // true
 ```
 
-Why is this intersting?  Well, often, you'll see this type of object construction:
+Why is this interesting?  Well, often, you'll see this type of object construction:
 
 ```javascript
 function Animal() {};
@@ -178,7 +183,5 @@ Animal.prototype = {
 ##### Seriously, do we even need the constructor property?
 
 As far as the JavaScript engine is concerned, the constructor property makes absolutely no difference to it. It's only useful if **your** code explicitly needs it (for example, if you need each of your instances to have a reference to the actual constructor function that created it).
-
-Frankly, one could do without the `constructor` property.  In most cases you should only be concerned about the `prototype` property.
 
 
