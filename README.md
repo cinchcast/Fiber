@@ -184,4 +184,8 @@ Animal.prototype = {
 
 As far as the JavaScript engine is concerned, the constructor property makes absolutely no difference to it. It's only useful if **your** code explicitly needs it (for example, if you need each of your instances to have a reference to the actual constructor function that created it).
 
+###### Resources
 
+1. JavaScript: The Good Parts, Douglas Crockford
+2. http://www.ecma-international.org/publications/standards/Ecma-262.htm
+3. http://dmitrysoshnikov.com/ecmascript/chapter-7-2-oop-ecmascript-implementation/
