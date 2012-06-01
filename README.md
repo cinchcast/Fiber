@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/krisk/Class.png?branch=master)](http://travis-ci.org/krisk/Class)
+
 Class
 =====
 
