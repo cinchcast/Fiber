@@ -19,7 +19,9 @@
 ( function( window ){
   // Stores whether the object is being initialized, and thus not
   // run the <init> function, or not.
-  var initializing = false;
+  var initializing = false,
+
+    hasProp = Object.prototype.hasOwnProperty;
 
   // The base Class implementation
   function Class(){};
@@ -52,7 +54,7 @@
 
        // Copy the properties over onto the new prototype
       for( name in props ){
-        if( props.hasOwnProperty( name ) ){
+        if( hasProp.call( props, name ) ){
           proto[name] = props[name];
         }
       }
