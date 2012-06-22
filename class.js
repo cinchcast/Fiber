@@ -62,17 +62,6 @@
       // Enforce the constructor to be what we expect
       proto.constructor = constructor;
 
-       // Add <decorate> ability
-      proto.decorate = function( /*decorator[s]*/ ){
-        var i,
-          len = arguments.length;
-
-        for( i = 0 ; i < len; i += 1 ){
-          arguments[i]( this, base );
-        }
-
-      };
-
        // Make this class extendable
       constructor.extend = Class.extend;
 
