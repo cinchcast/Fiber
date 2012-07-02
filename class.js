@@ -38,8 +38,8 @@
     // Keep a reference to the current prototye
     var base = this.prototype,
       // Invoke the function which will return an object literal used to define
-      // the prototype. Additionally, pass in the base prototype, which will
-      // allow instances to use the <base> keyword.
+      // the prototype. Additionally, pass in the parent prototype, which will
+      // allow instances to use it
       properties = fn( base ),
       // Stores the constructor's prototype
       proto;
@@ -49,13 +49,13 @@
         if( !initializing && typeof this.init === 'function' ){
           // All construction is done in the init method
           this.init.apply( this, arguments );
-          // Prevent any re-initializing on the instance
+          // Prevent any re-initializing of the instance
           this.init = null;
         }
       }
 
-      // Instantiate a base class (but only create the instance, don't run the init function)
-      // Make every <constructor> instance an instanceof <this> and of <constructor>
+      // Instantiate a base class (but only create the instance, don't run the init function),
+      // and make every <constructor> instance an instanceof <this> and of <constructor>
       initializing = true;
       proto = constructor.prototype = new this;
       initializing = false;
@@ -73,13 +73,15 @@
        // Make this class extendable
       constructor.extend = Class.extend;
 
+      // Add ability to create singleton
       constructor.singleton = Class.singleton;
 
+      // ... as well as mixin ability
       constructor.mixin = function( /* mixin[s] */ ) {
         var i,
           len = arguments.length
 
-        for( i = 0 ; i < len; i++ ){
+        for( i = 0; i < len; i++ ){
           copy( arguments[i]( base ), proto );
         }
       }
@@ -87,10 +89,12 @@
       return constructor;
   };
 
-  // return a proxy object for accessing base methods
+  // Returns a proxy object for accessing base methods
+  // with a given context
   Class.proxy = function( base, instance ) {
-    var iface = {},
-        wrap = function(fn) {
+    var name,
+        iface = {},
+        wrap = function( fn ) {
           return function() {
             return base[fn].apply( instance, arguments );
           };
@@ -99,7 +103,7 @@
     // Create a wrapped method for each method in the base
     // prototype
     for( name in base ){
-      if( base.hasOwnProperty( name ) ){
+      if( base.hasOwnProperty( name ) && typeof base[name] === 'function' ){
         iface[name] = wrap( name );
       }
     }
@@ -112,7 +116,7 @@
       len = arguments.length,
       base = instance.constructor.__base;
 
-    for( i = 1 ; i < len; i++ ){
+    for( i = 1; i < len; i++ ){
       arguments[i].call( instance, base );
     }
   }
