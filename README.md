@@ -1,5 +1,4 @@
-Class
-=====
+# Project name / Title (won't appear in the sidebar)
 
 *(Note: I realize "Class" isn't a very original name, so if you have any suggestions, let me know! Yes indeed, credit will be given)*
 

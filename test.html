@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="class.js"></script>
+</head>
+<body>
+<script>
+// EXAMPLES
+
+var Single = Class.singleton(function(base) {
+  return {
+    start: function() {
+      console.log('single::start');
+    }
+  }
+});
+
+var Single2 = Class.singleton(function(base) {
+  return {
+    start: function() {
+      console.log('single2::start');
+    }
+  }
+});
+
+Single.getInstance().start();
+Single.getInstance().start();
+Single2.getInstance().start();
+
+// Animal base class
+var Animal = Class.extend(function(base) {
+
+    return {
+        // The `init` method serves as the constructor.
+        init: function() {
+            // Insert private functions here
+            function private1(){}
+            function private2(){}
+
+            // Insert priviledged functions here
+            this.privileged1 = function(){}
+            this.privileged2 = function(){}
+        },
+        method1: function(arguments){
+            console.log('animal::here! method1', this.s, this.result, arguments);
+        },
+        method2: function(arguments){
+            console.log('animal::here! method2', this.s, this.result, arguments);
+        }
+    }
+});
+
+var SingleAnimal = Animal.singleton(function(base) {
+  return {
+    init: function(a, b) {
+      console.log(a, b);
+      this.s = 10;
+      this.result = 15;
+      console.log('HEREH HE RHE HR');
+      this.method1();
+    },
+    start: function() {
+      console.log('animal::single::start');
+    }
+  }
+}, 1, 2);
+
+console.log('SingleAnimal');
+SingleAnimal.getInstance().start();
+
+// Extend the Animal class;
+var Dog = Animal.extend(function(base) {
+    return {
+        init: function() {
+            this.base = Class.proxy(base, this);
+
+            this.result = 123;
+            // Call the base init.
+            base.init.call(this);
+        },
+        // Override base class `method1`
+        method1: function(){
+           this.base.method1('hello');
+           this.method2();
+
+           console.log('Dog::method1', this.s);
+        },
+        scare: function(){
+            console.log('Dog::I scare you');
+        }
+    }
+});
+
+/*
+Dog.mixin(function(base) {
+
+
+    return  {
+        something1: function() {
+            //base.method1.call(this);
+
+            console.log('mixing:something1', this.s);
+        }
+    }
+});
+
+var mix1 = function(base) {
+    return  {
+        something1: function() {
+            base.method1.call(this);
+            console.log('mixing:something1', this.s);
+        }
+    }
+};
+
+var mix2 = function(base) {
+    return  {
+        something2: function() {
+            base.method1.call(this);
+            console.log('mixing:something2', this.s);
+        }
+    }
+}
+
+Dog.mixin(mix2);
+*/
+
+
+var husky = new Dog();
+husky.scare(); // "Dog::I scare you'"
+husky.s = 1;
+husky.method1();
+
+Class.decorate(husky, function(base) {
+  this.scream = function() {
+    console.log('SCREAMING!!', base);
+    base.method1();
+  }
+});
+
+console.log('constructor', husky.constructor.__base);
+
+husky.scream();
+
+//console.dir(Class);
+
+//husky.init();
+//husky.something2();
+
+
+</script>
+</body>
+</html>
+

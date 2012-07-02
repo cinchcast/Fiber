@@ -1,7 +1,7 @@
 /**
  * Class Inheritance model
  *
- * Copyright (c) 2012 Kirollos Risk <kirollos@gmail.com>.
+ * Copyright (c) 2012 LinkedIn.
  * All Rights Reserved. Apache Software License 2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,9 +19,16 @@
 ( function( window ){
   // Stores whether the object is being initialized, and thus not
   // run the <init> function, or not.
-  var initializing = false,
+  var initializing = false;
 
-    hasProp = Object.prototype.hasOwnProperty;
+  function copy(from, to) {
+    var name;
+    for( name in from ){
+      if( from.hasOwnProperty( name ) ){
+        to[name] = from[name];
+      }
+    }
+  }
 
   // The base Class implementation
   function Class(){};
@@ -33,16 +40,17 @@
       // Invoke the function which will return an object literal used to define
       // the prototype. Additionally, pass in the base prototype, which will
       // allow instances to use the <base> keyword.
-      props = fn( base ),
+      properties = fn( base ),
       // Stores the constructor's prototype
-      proto,
-      name;
+      proto;
 
        // The dummy class constructor
       function constructor(){
-        if( !initializing && this.init ){
+        if( !initializing && typeof this.init === 'function' ){
           // All construction is done in the init method
           this.init.apply( this, arguments );
+          // Prevent any re-initializing on the instance
+          this.init = null;
         }
       }
 
@@ -53,20 +61,101 @@
       initializing = false;
 
        // Copy the properties over onto the new prototype
-      for( name in props ){
-        if( hasProp.call( props, name ) ){
-          proto[name] = props[name];
-        }
-      }
+      copy( properties, proto );
 
       // Enforce the constructor to be what we expect
       proto.constructor = constructor;
 
+      // Keep a reference to the parent prototype.
+      // This is needed in order to support decorators
+      constructor.__base = base;
+
        // Make this class extendable
       constructor.extend = Class.extend;
 
+      constructor.singleton = Class.singleton;
+
+      constructor.mixin = function( /* mixin[s] */ ) {
+        var i,
+          len = arguments.length
+
+        for( i = 0 ; i < len; i++ ){
+          copy( arguments[i]( base ), proto );
+        }
+      }
+
       return constructor;
   };
+
+  // return a proxy object for accessing base methods
+  Class.proxy = function( base, instance ) {
+    var iface = {},
+        wrap = function(fn) {
+          return function() {
+            return base[fn].apply( instance, arguments );
+          };
+        };
+
+    // Create a wrapped method for each method in the base
+    // prototype
+    for( name in base ){
+      if( base.hasOwnProperty( name ) ){
+        iface[name] = wrap( name );
+      }
+    }
+    return iface;
+  }
+
+  // Decorates an instance
+  Class.decorate = function( instance /*, decorator[s]*/ ) {
+    var i,
+      len = arguments.length,
+      base = instance.constructor.__base;
+
+    for( i = 1 ; i < len; i++ ){
+      arguments[i].call( instance, base );
+    }
+  }
+
+  // Return a singleton
+  Class.singleton = function( fn ) {
+    var obj = this.extend( fn ),
+      args = arguments;
+
+    return (function() {
+      var instance;
+
+      return {
+        getInstance: function() {
+          var temp;
+
+          // Create an instance, if it does not exist
+          if ( !instance ) {
+
+            // If there are additional arguments specified, they need to be
+            // passed into the constructor.
+            if ( args.length > 1 ) {
+              // temporary constructor
+              temp = function(){};
+              temp.prototype = obj.prototype;
+
+              instance = new temp;
+
+              // call the original constructor with 'instance' as the context
+              // and the rest of the arguments
+              obj.prototype.constructor.apply( instance, Array.prototype.slice.call( args, 1 ) );
+
+            } else {
+              instance = new obj();
+            }
+
+          }
+
+          return instance;
+        }
+      }
+    })();
+  }
 
    //Export to Common JS Loader
   if( typeof module !== 'undefined' ){
