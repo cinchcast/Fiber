@@ -17,10 +17,16 @@
  * limitations under the License.
  */
 ( function( window ){
-  // Stores whether the object is being initialized, and thus not
-  // run the <init> function, or not.
-  var initializing = false;
+  // Stores whether the object is being initialized. i.e., whether
+  // to run the <init> function, or not.
+  var initializing = false,
 
+  // Keep a few prototype references around, simply cuz we care about
+  // imperceptible lookup times.
+    arrayProto = Array.prototype,
+    objectProto = Object.prototype;
+
+  // Copies properties from one object to the other
   function copy(from, to) {
     var name;
     for( name in from ){
@@ -89,8 +95,12 @@
       return constructor;
   };
 
-  // Returns a proxy object for accessing base methods
-  // with a given context
+  /**
+   * @purpose Return a proxy object for accessing base methods with a given context
+   * @param base {Object}
+   * @param instance {Object}
+   * @return {Object}
+   */
   Class.proxy = function( base, instance ) {
     var name,
       iface = {},
@@ -111,7 +121,7 @@
   }
 
   /**
-   * @purpose: Decorate an instance with given decorator(s)
+   * @purpose Decorate an instance with given decorator(s)
    * @param instance {Object} Class instance to be decorated
    * @param decorators {Function|[Functions]} A single decorator or a list of decorators to apply
    * @param(s) args Remaining arguments to be passed into each decorator
@@ -132,11 +142,11 @@
    */
   Class.decorate = function( instance, decorators /*, arg[s] */ ) {
     var i,
-      decorators = Object.prototype.toString.call(decorators) === "[object Array]" ? decorators : [decorators],
+      decorators = objectProto.toString.call( decorators ) === "[object Array]" ? decorators : [decorators],
       len = decorators.length,
       base = instance.constructor.__base,
       // Get the rest of the arguments, if any are specified
-      args = Array.prototype.slice.call(arguments, 2);
+      args = arrayProto.slice.call( arguments, 2 );
 
     // Prepend the the base object
     args.unshift(base);
@@ -146,7 +156,12 @@
     }
   }
 
-  // Return a singleton
+  /**
+   * @purpose Return a singleton
+   * @param base {Object}
+   * @param instance {Object}
+   * @return {Object} Singleton
+   */
   Class.singleton = function( fn ) {
     var obj = this.extend( fn ),
       args = arguments;
@@ -172,7 +187,7 @@
 
               // call the original constructor with 'instance' as the context
               // and the rest of the arguments
-              obj.prototype.constructor.apply( instance, Array.prototype.slice.call( args, 1 ) );
+              obj.prototype.constructor.apply( instance, arrayProto.slice.call( args, 1 ) );
 
             } else {
               instance = new obj();
