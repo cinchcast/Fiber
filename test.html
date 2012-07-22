@@ -91,19 +91,6 @@ var Dog = Animal.extend(function(base) {
     }
 });
 
-/*
-Dog.mixin(function(base) {
-
-
-    return  {
-        something1: function() {
-            //base.method1.call(this);
-
-            console.log('mixing:something1', this.s);
-        }
-    }
-});
-
 var mix1 = function(base) {
     return  {
         something1: function() {
@@ -122,9 +109,6 @@ var mix2 = function(base) {
     }
 }
 
-Dog.mixin(mix2);
-*/
-
 
 var husky = new Dog();
 husky.scare(); // "Dog::I scare you'"
@@ -141,6 +125,10 @@ Class.decorate(husky, function(base) {
 console.log('constructor', husky.constructor.__base);
 
 husky.scream();
+
+Dog.mixin(mix2);
+
+husky.something2();
 
 //console.dir(Class);
 

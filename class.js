@@ -46,11 +46,11 @@
 
        // The dummy class constructor
       function constructor(){
-        if( !initializing && typeof this.init === 'function' ){
+        if( !initializing && typeof this.init === "function" ){
           // All construction is done in the init method
           this.init.apply( this, arguments );
           // Prevent any re-initializing of the instance
-          this.init = null;
+          delete this.init;
         }
       }
 
@@ -93,31 +93,56 @@
   // with a given context
   Class.proxy = function( base, instance ) {
     var name,
-        iface = {},
-        wrap = function( fn ) {
-          return function() {
-            return base[fn].apply( instance, arguments );
-          };
+      iface = {},
+      wrap = function( fn ) {
+        return function() {
+          return base[fn].apply( instance, arguments );
         };
+      };
 
     // Create a wrapped method for each method in the base
     // prototype
     for( name in base ){
-      if( base.hasOwnProperty( name ) && typeof base[name] === 'function' ){
+      if( base.hasOwnProperty( name ) && typeof base[name] === "function" ){
         iface[name] = wrap( name );
       }
     }
     return iface;
   }
 
-  // Decorates an instance
-  Class.decorate = function( instance /*, decorator[s]*/ ) {
+  /**
+   * @purpose: Decorate an instance with given decorator(s)
+   * @param instance {Object} Class instance to be decorated
+   * @param decorators {Function|[Functions]} A single decorator or a list of decorators to apply
+   * @param(s) args Remaining arguments to be passed into each decorator
+   *
+   * (Note: when a decorator is called, the first arguments passed is is the super class prototype
+   * (i.e., the base))
+   *
+   * Example usage:
+   *
+   *  function Decorator(base, arg1, arg2) {
+   *     // this === obj
+   *     // arg1 === 1
+   *     // arg2 === 2
+   *  }
+   *
+   *  var obj = new Bar(); // Some Class instance
+   *  Class.decorate(obj, 1, 2);
+   */
+  Class.decorate = function( instance, decorators /*, arg[s] */ ) {
     var i,
-      len = arguments.length,
-      base = instance.constructor.__base;
+      decorators = Object.prototype.toString.call(decorators) === "[object Array]" ? decorators : [decorators],
+      len = decorators.length,
+      base = instance.constructor.__base,
+      // Get the rest of the arguments, if any are specified
+      args = Array.prototype.slice.call(arguments, 2);
 
-    for( i = 1; i < len; i++ ){
-      arguments[i].call( instance, base );
+    // Prepend the the base object
+    args.unshift(base);
+
+    for( i = 0; i < len; i++ ){
+      decorators[i].apply( instance, args );
     }
   }
 
@@ -162,8 +187,8 @@
   }
 
    //Export to Common JS Loader
-  if( typeof module !== 'undefined' ){
-    if( typeof module.setExports === 'function' ){
+  if( typeof module !== "undefined" ){
+    if( typeof module.setExports === "function" ){
       module.setExports( Class );
     } else if( module.exports ){
       module.exports = Class;
