@@ -70,6 +70,9 @@ SingleAnimal.getInstance().start();
 
 // Extend the Animal class;
 var Dog = Animal.extend(function(base) {
+
+    var supr = base.createSuper(this);
+
     return {
         init: function() {
             this.base = Class.proxy(base, this);
