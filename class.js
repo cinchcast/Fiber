@@ -162,7 +162,7 @@
   };
 
    // Export the Class object to Common JS Loader
-  if( typeof module !== '''undefined' ){
+  if( typeof module !== 'undefined' ){
     if( typeof module.setExports === 'function' ){
       module.setExports( Class );
     } else if( module.exports ){
@@ -172,4 +172,4 @@
     root.Class = Class;
   }
 
-}( window || this ) );
+})( window );
