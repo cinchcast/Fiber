@@ -16,10 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-( function( root ){
+( function(){
+  // Establish the root object, `window` in the browser, or `global` on the server.
+  var root = this,
+
   // Stores whether the object is being initialized. i.e., whether
-  // to run the <init> function, or not.
-  var initializing = false,
+  // to run the `init` function, or not.
+    initializing = false,
 
   // Keep a few prototype references around - for speed access,
   // and saving bytes in the minified version.
@@ -64,7 +67,7 @@
       }
 
       // Instantiate a base class (but only create the instance, don't run the init function),
-      // and make every <constructor> instance an instanceof <this> and of <constructor>
+      // and make every `constructor` instance an instance of `this` and of `constructor`
       initializing = true;
       proto = ctor.prototype = new this;
       initializing = false;
@@ -172,4 +175,4 @@
     root.Class = Class;
   }
 
-})( window );
+}).call( this );
