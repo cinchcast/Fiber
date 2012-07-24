@@ -1,5 +1,6 @@
 /**
  * Class Inheritance model
+ * Version 1.0.1
  *
  * Copyright (c) 2012 LinkedIn.
  * All Rights Reserved. Apache Software License 2.0
@@ -118,7 +119,7 @@
       }
     }
     return iface;
-  }
+  };
 
   /**
    * @purpose Decorate an instance with given decorator(s)
@@ -154,7 +155,7 @@
     for( i = 0; i < len; i++ ){
       decorators[i].apply( instance, args );
     }
-  }
+  };
 
   /**
    * @purpose Return a singleton
@@ -199,7 +200,13 @@
         }
       }
     })();
-  }
+  };
+
+  var _Class = window.Class;
+  Class.noConflict = function() {
+    window.Class = _Class;
+    return Class;
+  };
 
    //Export to Common JS Loader
   if( typeof module !== "undefined" ){
