@@ -159,6 +159,10 @@
     }
   };
 
+  /**
+   * Run Class.js in *noConflict* mode, returning the `Class` variable to its
+   * previous owner. Returns a reference to the Class object.
+   */
   Class.noConflict = function() {
     root.Class = previousClass;
     return Class;
