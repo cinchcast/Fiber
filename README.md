@@ -87,7 +87,6 @@ var Dog = Animal.extend(function( base ) {
 `[[constructor]].mixin( function1, function2, ... )`
 
 ```javascript
-// Animal base class
 var Foo = Class.extend(function(base) {
     return {
         method1: function(){}
@@ -110,15 +109,15 @@ f.method2();
 
 ### Usage
 
-`Class.decorate( instance, function1, function2, ... )`
+`Class.decorate( instance, [function1, function2, ... ], arg1, arg2, ... )`
 
 ```javascript
-function CarWithPowerWindows() {
+function CarWithPowerWindows(base) {
 }
-function CarWithLeaterSeats() {
+function CarWithLeaterSeats(base) {
 }
 
-Class.decorate(myCar, CarWithPowerWindows, CarWithLeaterSeats);
+Class.decorate(myCar, [CarWithPowerWindows, CarWithLeaterSeats]);
 ```
 
 ## Proxy
