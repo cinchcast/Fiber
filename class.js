@@ -1,5 +1,5 @@
 /**
- * Class.js 1.0.1
+ * Class.js 1.0.2
  *
  * Copyright (c) 2012 LinkedIn.
  * All Rights Reserved. Apache Software License 2.0
