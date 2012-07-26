@@ -79,7 +79,7 @@
       proto.constructor = ctor;
 
       // Keep a reference to the parent prototype.
-      // Note: this is needed in order to support decorators
+      // (Note: currently used by decorators, so that the `base` can be inferred)
       ctor.__base__ = base;
 
        // Make this class extendable
@@ -100,6 +100,11 @@
 
   /**
    * @purpose Return a proxy object for accessing base methods with a given context
+   *
+   * Overloads:
+   *   - Class.proxy( instance )
+   *   - Class.proxy( base, instance )
+   *
    * @param base {Object}
    * @param instance {Object}
    * @return {Object}
@@ -107,11 +112,20 @@
   Class.proxy = function( base, instance ) {
     var name,
       iface = {},
-      wrap = function( fn ) {
-        return function() {
-          return base[fn].apply( instance, arguments );
-        };
+      wrap;
+
+    // If there's only 1 argument specified, then it is the instance,
+    // thus infer `base` from its constructor.
+    if ( arguments.length === 1 ) {
+      instance = base;
+      base = instance.constructor.__base__;
+    }
+
+    wrap = function( fn ) {
+      return function() {
+        return base[fn].apply( instance, arguments );
       };
+    };
 
     // Create a wrapped method for each method in the base
     // prototype
