@@ -1,6 +1,7 @@
 /**
  * Class.js 1.0.2
- *
+ * @Author Kirollos Risk
+ * 
  * Copyright (c) 2012 LinkedIn.
  * All Rights Reserved. Apache Software License 2.0
  *
