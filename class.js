@@ -1,7 +1,7 @@
 /**
  * Class.js 1.0.2
  * @Author: Kirollos Risk
- * 
+ *
  * Copyright (c) 2012 LinkedIn.
  * All Rights Reserved. Apache Software License 2.0
  *
@@ -46,16 +46,18 @@
   // Create a new Class that inherits from this class
   Class.extend = function( fn ){
     // Keep a reference to the current prototye
-    var base = this.prototype,
-      // Invoke the function which will return an object literal used to define
-      // the prototype. Additionally, pass in the parent prototype, which will
-      // allow instances to use it
-      properties = fn( base ),
-      // Stores the constructor's prototype
+    var parent = this.prototype,
+
+    // Invoke the function which will return an object literal used to define
+    // the prototype. Additionally, pass in the parent prototype, which will
+    // allow instances to use it.
+      properties = fn( parent ),
+
+    // Stores the constructor's prototype
       proto;
 
-       // The dummy constructor function
-      function ctor(){
+       // The constructor function for the new subclass
+      function child(){
         if( !initializing && typeof this.init === 'function' ){
           // All construction is done in the init method
           this.init.apply( this, arguments );
@@ -67,33 +69,33 @@
       // Instantiate a base class (but only create the instance, don't run the init function),
       // and make every `constructor` instance an instance of `this` and of `constructor`
       initializing = true;
-      proto = ctor.prototype = new this;
+      proto = child.prototype = new this;
       initializing = false;
 
        // Copy the properties over onto the new prototype
       copy( properties, proto );
 
       // Enforce the constructor to be what we expect
-      proto.constructor = ctor;
+      proto.constructor = child;
 
       // Keep a reference to the parent prototype.
-      // (Note: currently used by decorators, so that the `base` can be inferred)
-      ctor.__base__ = base;
+      // (Note: currently used by decorators, so that the parent can be inferred)
+      child.__base__ = parent;
 
        // Make this class extendable
-      ctor.extend = Class.extend;
+      child.extend = Class.extend;
 
       // Add ability to create mixins
-      ctor.mixin = function( /* mixin[s] */ ) {
+      child.mixin = function( /* mixin[s] */ ) {
         var i,
           len = arguments.length
 
         for( i = 0; i < len; i++ ){
-          copy( arguments[i]( base ), proto );
+          copy( arguments[i]( parent ), proto );
         }
       }
 
-      return ctor;
+      return child;
   };
 
   /**
