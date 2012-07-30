@@ -16,13 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-( function(){
-  // Establish the root object, `window` in the browser, or `global` on the server.
-  var root = this,
-
+( function( global ){
   // Stores whether the object is being initialized. i.e., whether
   // to run the `init` function, or not.
-    initializing = false,
+  var initializing = false,
 
   // Keep a few prototype references around - for speed access,
   // and saving bytes in the minified version.
@@ -30,7 +27,7 @@
     ObjectProto = Object.prototype,
 
   // Save the previous value of Class.
-    previousClass = root.Class;
+    previousClass = global.Class;
 
   // Copies properties from one object to the other
   function copy(from, to) {
@@ -178,7 +175,7 @@
    * previous owner. Returns a reference to the Class object.
    */
   Class.noConflict = function() {
-    root.Class = previousClass;
+    global.Class = previousClass;
     return Class;
   };
 
@@ -190,7 +187,7 @@
       module.exports = Class;
     }
   } else {
-    root.Class = Class;
+    global.Class = Class;
   }
 
-}).call( this );
+})( this );
