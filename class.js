@@ -24,7 +24,8 @@
 
   // Keep a few prototype references around - for speed access,
   // and saving bytes in the minified version.
-    ArrayProto = Array.prototype;
+    ArrayProto = Array.prototype,
+    ObjectProto = Object.prototype,
 
   // Save the previous value of Class.
     previousClass = global.Class;
@@ -129,30 +130,36 @@
   /**
    * @purpose Decorate an instance with given decorator(s)
    * @param instance {Object} Class instance to be decorated
-   * @param decorators {Function} Argument[s] of decorator function[s]
+   * @param decorators {Function|[Functions]} A single decorator or a list of decorators to apply
+   * @param(s) args Remaining arguments to be passed into each decorator
    *
-   * Note: when a decorator is executed, the argument passed in is the super class prototype
-   * (i.e., the base)
+   * (Note: when a decorator is called, the first arguments passed is is the super class prototype
+   * (i.e., the base))
    *
    * Example usage:
    *
-   *  function Decorator(base) {
+   *  function Decorator(base, arg1, arg2) {
    *     // this === obj
+   *     // arg1 === 1
+   *     // arg2 === 2
    *  }
    *
    *  var obj = new Bar(); // Some Class instance
-   *  Class.decorate(obj, Decorator);
+   *  Class.decorate(obj, 1, 2);
    */
-  Class.decorate = function( instance /*, decorator[s] */) {
+  Class.decorate = function( instance, decorators /*, arg[s] */ ) {
     var i,
-      // Get the base prototype
+      decorators = ObjectProto.toString.call( decorators ) ===  '[object Array]' ? decorators : [decorators],
+      len = decorators.length,
       base = instance.constructor.__base__,
-      // Get all the decorators in the arguments
-      decorators = ArrayProto.slice.call( arguments, 1 ),
-      len = decorators.length;
+      // Get the rest of the arguments, if any are specified
+      args = ArrayProto.slice.call( arguments, 2 );
+
+    // Prepend the the base object
+    args.unshift(base);
 
     for( i = 0; i < len; i++ ){
-      copy( decorators[i]( base ), instance );
+      decorators[i].apply( instance, args );
     }
   };
 

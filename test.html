@@ -75,7 +75,7 @@ var mix2 = function(base) {
             base.method1.call(this);
             console.log('mixing:something2', this.s);
         }
-    };
+    }
 }
 
 
@@ -85,19 +85,15 @@ husky.s = 1;
 husky.method1();
 
 Ccc.decorate(husky, function(base) {
-  return {
-    scream: function() {
-        console.log('SCREAMING!!', base);
-        base.method1();
-    }
-  };
+  this.scream = function() {
+    console.log('SCREAMING!!', base);
+    base.method1();
+  }
 });
 
 console.log('constructor', husky.constructor.__base);
 
 husky.scream();
-
-console.log('heresssss', Dog.__base__);
 
 Ccc.mixin(Dog, mix2);
 
