@@ -39,15 +39,6 @@
     }
   }
 
-  // Augment an object
-  function augment(obj, base, list) {
-    var i, len = list.length;
-
-    for( i = 0; i < len; i++ ){
-      copy( list[i]( base ), obj );
-    }
-  }
-
   // The base Class implementation
   function Class(){};
 
@@ -135,6 +126,14 @@
     return iface;
   };
 
+  function augment(obj, base , list) {
+    var i, len = args.length;
+
+    for( i = 0; i < len; i++ ){
+      copy( list[i]( base ), obj );
+    }
+  }
+
   /**
    * @purpose Decorate an instance with given decorator(s)
    * @param instance {Object} Class instance to be decorated
@@ -156,7 +155,16 @@
    *  Class.decorate(obj, Decorator);
    */
   Class.decorate = function( instance /*, decorator[s] */) {
-    augment( instance, instance.constructor.__base__, ArrayProto.slice.call( arguments, 1 ) );
+    var i,
+      // Get the base prototype
+      base = instance.constructor.__base__,
+      // Get all the decorators in the arguments
+      decorators = ArrayProto.slice.call( arguments, 1 ),
+      len = decorators.length;
+
+    for( i = 0; i < len; i++ ){
+      copy( decorators[i].call( instance, base ), instance );
+    }
   };
 
   /**
@@ -189,7 +197,16 @@
    *  obj.method2();
    */
   Class.mixin = function( definition /*, mixin[s] */ ) {
-    augment( definition.prototype, definition.__base__, ArrayProto.slice.call( arguments, 1 ) );
+    var i,
+      // Get the base prototype
+      base = definition.__base__,
+      // Get all the mixins in the arguments
+      mixins = ArrayProto.slice.call( arguments, 1 ),
+      len = mixins.length;
+
+    for( i = 0; i < len; i++ ){
+      copy( mixins[i]( base ), definition.prototype );
+    }
   };
 
   /**

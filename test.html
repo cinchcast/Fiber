@@ -78,24 +78,30 @@ var mix2 = function(base) {
     }
 }
 
-
 var husky = new Dog();
 husky.scare(); // "Dog::I scare you'"
 husky.s = 1;
-husky.method1();
 
 Ccc.decorate(husky, function(base) {
+    this.blah = 1;
+
   return {
     scream: function() {
         console.log('SCREAMING!!', base);
         base.method1.call(this);
+    },
+    indeed: function() {
+        console.log('indeed', this.blah);
     }
   }
 });
 
+husky.indeed();
+
 console.log('constructor', husky.constructor.__base);
 
 husky.scream();
+husky.blah;
 
 Ccc.mixin(Dog, mix2);
 
