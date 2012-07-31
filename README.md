@@ -82,6 +82,8 @@ var Dog = Animal.extend(function( base ) {
 
 ## Mixin
 
+Mixins are a way to add functionality to a Class definition.  Basically, they address the problem of "multiple inheritance".  [Read more.](http://www.joezimjs.com/javascript/javascript-mixins-functional-inheritance/)
+
 ### Usage
 
 `[[constructor]].mixin( function1, function2, ... )`
@@ -107,17 +109,21 @@ f.method2();
 
 ## Decorators
 
+With decorators you can dynamically attach additional properties to an instance.  [Read more.](http://en.wikipedia.org/wiki/Decorator_pattern)
+
 ### Usage
 
 `Class.decorate( instance, [function1, function2, ... ], arg1, arg2, ... )`
 
 ```javascript
 function CarWithPowerWindows(base) {
+    // this === myCar
 }
-function CarWithLeaterSeats(base) {
+function CarWithLeatherSeats(base) {
+    // this === myCar
 }
 
-Class.decorate(myCar, [CarWithPowerWindows, CarWithLeaterSeats]);
+Class.decorate(myCar, [CarWithPowerWindows, CarWithLeatherSeats]);
 ```
 
 ## Proxy
@@ -137,4 +143,13 @@ var Dog = Animal.extend(function(base) {
     }
 });
 ```
+
+## noConflict
+
+### Usage
+
+`Class.noConflict()`
+
+Returns a reference to the Class object, and sets the `Class` variable to its previous owner.
+
 
