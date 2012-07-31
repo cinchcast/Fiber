@@ -85,9 +85,11 @@ husky.s = 1;
 husky.method1();
 
 Ccc.decorate(husky, function(base) {
-  this.scream = function() {
-    console.log('SCREAMING!!', base);
-    base.method1();
+  return {
+    scream: function() {
+        console.log('SCREAMING!!', base);
+        base.method1.call(this);
+    }
   }
 });
 

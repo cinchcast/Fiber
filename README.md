@@ -115,13 +115,13 @@ With decorators you can dynamically attach additional properties to an instance.
 
 ### Usage
 
-`Class.decorate( instance, decorator_1, arg_1, ..., arg_2 )`
-`Class.decorate( instance, [decorators], arg_1, ..., arg_2 )`
+`Class.decorate( instance, decorator_1, ... , decorator_n )`
 
 ```javascript
 function CarWithPowerWindows(base) {
-    // this === myCar
-    this.roll = function() {};
+    return {
+        roll: function() {}
+    }
 }
 
 Class.decorate(myCar, CarWithPowerWindows);

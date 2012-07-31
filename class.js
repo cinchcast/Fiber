@@ -24,8 +24,7 @@
 
   // Keep a few prototype references around - for speed access,
   // and saving bytes in the minified version.
-    ArrayProto = Array.prototype,
-    ObjectProto = Object.prototype,
+    ArrayProto = Array.prototype;
 
   // Save the previous value of Class.
     previousClass = global.Class;
@@ -130,36 +129,33 @@
   /**
    * @purpose Decorate an instance with given decorator(s)
    * @param instance {Object} Class instance to be decorated
-   * @param decorators {Function|[Functions]} A single decorator or a list of decorators to apply
-   * @param(s) args Remaining arguments to be passed into each decorator
+   * @param decorators {Function} Argument[s] of decorator function[s]
    *
-   * (Note: when a decorator is called, the first arguments passed is is the super class prototype
-   * (i.e., the base))
+   * Note: when a decorator is executed, the argument passed in is the super class prototype
+   * (i.e., the base)
    *
    * Example usage:
    *
-   *  function Decorator(base, arg1, arg2) {
+   *  function Decorator(base) {
    *     // this === obj
-   *     // arg1 === 1
-   *     // arg2 === 2
+   *     return {
+   *        method: function() {}
+   *     };
    *  }
    *
    *  var obj = new Bar(); // Some Class instance
-   *  Class.decorate(obj, 1, 2);
+   *  Class.decorate(obj, Decorator);
    */
-  Class.decorate = function( instance, decorators /*, arg[s] */ ) {
+  Class.decorate = function( instance /*, decorator[s] */) {
     var i,
-      decorators = ObjectProto.toString.call( decorators ) ===  '[object Array]' ? decorators : [decorators],
-      len = decorators.length,
+      // Get the base prototype
       base = instance.constructor.__base__,
-      // Get the rest of the arguments, if any are specified
-      args = ArrayProto.slice.call( arguments, 2 );
-
-    // Prepend the the base object
-    args.unshift(base);
+      // Get all the decorators in the arguments
+      decorators = ArrayProto.slice.call( arguments, 1 ),
+      len = decorators.length;
 
     for( i = 0; i < len; i++ ){
-      decorators[i].apply( instance, args );
+      copy( decorators[i]( base ), instance );
     }
   };
 
