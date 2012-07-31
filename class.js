@@ -56,46 +56,46 @@
     // Stores the constructor's prototype
       proto;
 
-       // The constructor function for the new subclass
-      function child(){
-        if( !initializing && typeof this.init === 'function' ){
-          // All construction is done in the init method
-          this.init.apply( this, arguments );
-          // Prevent any re-initializing of the instance
-          delete this.init;
-        }
+    // The constructor function for the new subclass
+    function child(){
+      if( !initializing && typeof this.init === 'function' ){
+        // All construction is done in the init method
+        this.init.apply( this, arguments );
+        // Prevent any re-initializing of the instance
+        delete this.init;
       }
+    }
 
-      // Instantiate a base class (but only create the instance, don't run the init function),
-      // and make every `constructor` instance an instance of `this` and of `constructor`
-      initializing = true;
-      proto = child.prototype = new this;
-      initializing = false;
+    // Instantiate a base class (but only create the instance, don't run the init function),
+    // and make every `constructor` instance an instance of `this` and of `constructor`
+    initializing = true;
+    proto = child.prototype = new this;
+    initializing = false;
 
-       // Copy the properties over onto the new prototype
-      copy( properties, proto );
+     // Copy the properties over onto the new prototype
+    copy( properties, proto );
 
-      // Enforce the constructor to be what we expect
-      proto.constructor = child;
+    // Enforce the constructor to be what we expect
+    proto.constructor = child;
 
-      // Keep a reference to the parent prototype.
-      // (Note: currently used by decorators, so that the parent can be inferred)
-      child.__base__ = parent;
+    // Keep a reference to the parent prototype.
+    // (Note: currently used by decorators, so that the parent can be inferred)
+    child.__base__ = parent;
 
-       // Make this class extendable
-      child.extend = Class.extend;
+     // Make this class extendable
+    child.extend = Class.extend;
 
-      // Add ability to create mixins
-      child.mixin = function( /* mixin[s] */ ) {
-        var i,
-          len = arguments.length
+    // Add ability to create mixins
+    child.mixin = function( /* mixin[s] */ ) {
+      var i,
+        len = arguments.length
 
-        for( i = 0; i < len; i++ ){
-          copy( arguments[i]( parent ), proto );
-        }
+      for( i = 0; i < len; i++ ){
+        copy( arguments[i]( parent ), proto );
       }
+    }
 
-      return child;
+    return child;
   };
 
   /**
