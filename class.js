@@ -1,5 +1,5 @@
 /**
- * Class.js 1.0.2
+ * Class.js 1.0.3
  * @Author: Kirollos Risk
  *
  * Copyright (c) 2012 LinkedIn.
@@ -24,8 +24,7 @@
 
   // Keep a few prototype references around - for speed access,
   // and saving bytes in the minified version.
-    ArrayProto = Array.prototype,
-    ObjectProto = Object.prototype,
+    ArrayProto = Array.prototype;
 
   // Save the previous value of Class.
     previousClass = global.Class;
@@ -79,21 +78,11 @@
     proto.constructor = child;
 
     // Keep a reference to the parent prototype.
-    // (Note: currently used by decorators, so that the parent can be inferred)
+    // (Note: currently used by decorators and mixins, so that the parent can be inferred)
     child.__base__ = parent;
 
      // Make this class extendable
     child.extend = Class.extend;
-
-    // Add ability to create mixins
-    child.mixin = function( /* mixin[s] */ ) {
-      var i,
-        len = arguments.length
-
-      for( i = 0; i < len; i++ ){
-        copy( arguments[i]( parent ), proto );
-      }
-    }
 
     return child;
   };
@@ -140,36 +129,71 @@
   /**
    * @purpose Decorate an instance with given decorator(s)
    * @param instance {Object} Class instance to be decorated
-   * @param decorators {Function|[Functions]} A single decorator or a list of decorators to apply
-   * @param(s) args Remaining arguments to be passed into each decorator
+   * @param decorators {Function} Argument[s] of decorator function[s]
    *
-   * (Note: when a decorator is called, the first arguments passed is is the super class prototype
-   * (i.e., the base))
+   * Note: when a decorator is executed, the argument passed in is the super class prototype
+   * (i.e., the base)
    *
    * Example usage:
    *
-   *  function Decorator(base, arg1, arg2) {
+   *  function Decorator(base) {
    *     // this === obj
-   *     // arg1 === 1
-   *     // arg2 === 2
    *  }
    *
    *  var obj = new Bar(); // Some Class instance
-   *  Class.decorate(obj, 1, 2);
+   *  Class.decorate(obj, Decorator);
    */
-  Class.decorate = function( instance, decorators /*, arg[s] */ ) {
+  Class.decorate = function( instance /*, decorator[s] */) {
     var i,
-      decorators = ObjectProto.toString.call( decorators ) ===  '[object Array]' ? decorators : [decorators],
+      decorators = ArrayProto.slice.call( arguments, 1 ),
       len = decorators.length,
-      base = instance.constructor.__base__,
-      // Get the rest of the arguments, if any are specified
-      args = ArrayProto.slice.call( arguments, 2 );
-
-    // Prepend the the base object
-    args.unshift(base);
+      // Get the base prototype
+      base = instance.constructor.__base__;
 
     for( i = 0; i < len; i++ ){
-      decorators[i].apply( instance, args );
+      copy( decorators[i]( base ), instance );
+    }
+  };
+
+  /**
+   * @purpose Add functionality to a Class definition
+   * @param mixin[s] {Function} Argument[s] of mixin function[s]
+   *
+   * Note: when a mixing is executed, the argument passed in is the super class prototype
+   * (i.e., the base)
+   *
+   * Overloads:
+   *   - Class.mixin( definition, mix_1 )
+   *   - Class.mixin( definition, mix_1, ..., mix_n )
+   *
+   * Example usage:
+   *
+   *   var Definition = Class.extend(function(base) {
+   *     return {
+   *       method1: function(){}
+   *     }
+   *   });
+   *
+   *   function Mixin(base) {
+   *     return {
+   *       method2: function(){}
+   *     }
+   *   }
+   *
+   *  Class.mixin(obj, Mixin);
+   *  var obj = new Definition();
+   *  obj.method2();
+   */
+  Class.mixin = function( definition /*, mixin[s] */ ) {
+    var i,
+      // Get the base prototype
+      base = definition.__base__,
+      // Get all the mixins in the arguments
+      mixins = ArrayProto.slice.call( arguments, 1 ),
+      len = mixins.length;
+
+    for( i = 0; i < len; i++ ){
+      copy( mixins[i]( base ), definition.prototype );
     }
   };
 
