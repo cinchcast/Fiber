@@ -86,7 +86,7 @@ Mixins are a way to add functionality to a Class definition.  Basically, they ad
 
 ### Usage
 
-`[[constructor]].mixin( function1, function2, ... )`
+`Class.mixin( object, function1, function2, ... )`
 
 ```javascript
 var Foo = Class.extend(function(base) {
@@ -98,11 +98,13 @@ var Foo = Class.extend(function(base) {
 var f = new Foo();
 f.method1();
 
-Foo.mixin(function() {
+var mix1 = function(base) {
     return  {
         method2: function() {}
     }
-});
+}
+
+Class.mixin(Foo, mix1);
 
 f.method2();
 ```
@@ -113,7 +115,7 @@ With decorators you can dynamically attach additional properties to an instance.
 
 ### Usage
 
-`Class.decorate( instance, [function1, function2, ... ], arg1, arg2, ... )`
+`Class.decorate( instance, decorator_1, ... , decorator_n )`
 
 ```javascript
 function CarWithPowerWindows(base) {
@@ -123,7 +125,7 @@ function CarWithLeatherSeats(base) {
     // this === myCar
 }
 
-Class.decorate(myCar, [CarWithPowerWindows, CarWithLeatherSeats]);
+Class.decorate(myCar, CarWithPowerWindows, CarWithLeatherSeats);
 ```
 
 ## Proxy
