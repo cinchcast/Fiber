@@ -1,4 +1,4 @@
-# Class.js
+# Fiber.js
 
 ## Inheritance
 
@@ -10,7 +10,7 @@
 
 ```javascript
 // Animal base class
-var Animal = Class.extend(function() {
+var Animal = Fiber.extend(function() {
     return {
         // The `init` method serves as the constructor.
         init: function() {
@@ -82,14 +82,14 @@ var Dog = Animal.extend(function( base ) {
 
 ## Mixin
 
-Mixins are a way to add functionality to a Class definition.  Basically, they address the problem of "multiple inheritance".  [Read more.](http://www.joezimjs.com/javascript/javascript-mixins-functional-inheritance/)
+Mixins are a way to add functionality to a Fiber definition.  Basically, they address the problem of "multiple inheritance".  [Read more.](http://www.joezimjs.com/javascript/javascript-mixins-functional-inheritance/)
 
 ### Usage
 
-`Class.mixin( object, function1, function2, ... )`
+`Fiber.mixin( object, function1, function2, ... )`
 
 ```javascript
-var Foo = Class.extend(function(base) {
+var Foo = Fiber.extend(function(base) {
     return {
         method1: function(){}
     }
@@ -104,7 +104,7 @@ var mix1 = function(base) {
     }
 }
 
-Class.mixin(Foo, mix1);
+Fiber.mixin(Foo, mix1);
 
 f.method2();
 ```
@@ -115,7 +115,7 @@ With decorators you can dynamically attach additional properties to an instance.
 
 ### Usage
 
-`Class.decorate( instance, decorator_1, ... , decorator_n )`
+`Fiber.decorate( instance, decorator_1, ... , decorator_n )`
 
 ```javascript
 function CarWithPowerWindows(base) {
@@ -124,21 +124,21 @@ function CarWithPowerWindows(base) {
     }
 }
 
-Class.decorate(myCar, CarWithPowerWindows);
+Fiber.decorate(myCar, CarWithPowerWindows);
 ```
 
 ## Proxy
 
 ### Usage
 
-`Class.proxy( base, instance )`
+`Fiber.proxy( base, instance )`
 
 ```javascript
 // Extend the Animal class;
 var Dog = Animal.extend(function(base) {
     return {
         init: function() {
-            this.base = Class.proxy(base, this);
+            this.base = Fiber.proxy(base, this);
             this.base.init();
         }
     }
@@ -149,8 +149,8 @@ var Dog = Animal.extend(function(base) {
 
 ### Usage
 
-`Class.noConflict()`
+`Fiber.noConflict()`
 
-Returns a reference to the Class object, and sets the `Class` variable to its previous owner.
+Returns a reference to the Fiber object, and sets the `Fiber` variable to its previous owner.
 
 

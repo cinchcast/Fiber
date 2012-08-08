@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>undefined</title>
+    
+    <link rel="stylesheet" type="text/css" href="http://documentup.com/stylesheets/screen.css">
+    
+    
+
+    
+
+    <!-- Typekit -->
+    
+      <script type="text/javascript">
+        (function() {
+          var config = {
+            kitId: 'hjp0pft',
+            scriptTimeout: 3000
+          };
+          var h=document.getElementsByTagName("html")[0];h.className+=" wf-loading";var t=setTimeout(function(){h.className=h.className.replace(/( |^)wf-loading( |$)/g,"");h.className+=" wf-inactive"},config.scriptTimeout);var tk=document.createElement("script");tk.src='//use.typekit.net/'+config.kitId+'.js';tk.type="text/javascript";tk.async="true";tk.onload=tk.onreadystatechange=function(){var a=this.readyState;if(a&&a!="complete"&&a!="loaded")return;clearTimeout(t);try{Typekit.load(config)}catch(b){}};var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(tk,s)
+        })();
+      </script>
+    
+  </head>
+  <body><div id="container">
+  <div id="nav">
+    
+      <div id="header">
+        <a href="#" id="logo">undefined</a>
+      </div>
+    
+    <ul id="sections">
+      
+        <li>
+          <a href="#inheritance">Inheritance</a>
+          
+            <ul>
+              
+                <li>
+                  <a href="#inheritance/usage">Usage</a>
+                </li>
+              
+                <li>
+                  <a href="#inheritance/inheritance">Inheritance</a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+        <li>
+          <a href="#mixin">Mixin</a>
+          
+            <ul>
+              
+                <li>
+                  <a href="#mixin/usage">Usage</a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+        <li>
+          <a href="#decorators">Decorators</a>
+          
+            <ul>
+              
+                <li>
+                  <a href="#decorators/usage">Usage</a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+        <li>
+          <a href="#proxy">Proxy</a>
+          
+            <ul>
+              
+                <li>
+                  <a href="#proxy/usage">Usage</a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+    </ul>
+    
+    
+  </div>
+  <div id="content">
+    
+    <h1>Class.js</h1>
+<h2 id='inheritance'>Inheritance</h2 id='inheritance'>
+<h3 id='inheritance/usage'>Usage</h3 id='inheritance/usage'>
+<p><code>[[constructor]].extend( function )</code>
+
+</p>
+<h4>Example</h4>
+<pre><code class="javascript"><span class="comment">// Animal base class</span>
+<span class="keyword">var</span> Animal = Class.extend(<span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+    <span class="keyword">return</span> {
+        <span class="comment">// The `init` method serves as the constructor.</span>
+        init: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+            <span class="comment">// Private</span>
+            <span class="function"><span class="keyword">function</span> <span class="title">private1</span><span class="params">()</span>{</span>}
+            <span class="function"><span class="keyword">function</span> <span class="title">private2</span><span class="params">()</span>{</span>}
+
+            <span class="comment">// Privileged</span>
+            <span class="keyword">this</span>.privileged1 = <span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>}
+            <span class="keyword">this</span>.privileged2 = <span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>}
+        },
+        <span class="comment">// Public</span>
+        method1: <span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>}
+    }
+});</code></pre>
+<p>The <code>init</code> method acts as the constructor, which is invoked when an instance is created:
+
+</p>
+<pre><code class="javascript"><span class="keyword">var</span> animal = <span class="keyword">new</span> Animal(); <span class="comment">// Create a new Animal instance</span></code></pre>
+<p><code>init</code> is invoked automatically.
+
+</p>
+<h3 id='inheritance/inheritance'>Inheritance</h3 id='inheritance/inheritance'>
+<pre><code class="javascript"><span class="comment">// Extend the Animal class.</span>
+<span class="keyword">var</span> Dog = Animal.extend(<span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+    <span class="keyword">return</span> {
+        <span class="comment">// Override base class `method1`</span>
+        method1: <span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>
+            console.log(<span class="string">'dog::method1'</span>);
+        },
+        scare: <span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>
+            console.log(<span class="string">'Dog::I scare you'</span>);
+        }
+    }
+});</code></pre>
+<p>Create an instance of <code>Dog</code>:
+
+</p>
+<pre><code class="javascript"><span class="keyword">var</span> husky = <span class="keyword">new</span> Dog();
+husky.scare(); <span class="comment">// "Dog::I scare you'"</span></code></pre>
+<h4>Accessing parent prototype</h4>
+<p>Every class definition has access to the parent&#39;s prototype via the first argument passed into the function:
+
+</p>
+<pre><code class="javascript"><span class="comment">// Extend the Animal class.</span>
+<span class="keyword">var</span> Dog = Animal.extend(<span class="function"><span class="keyword">function</span><span class="params">( base )</span> {</span>
+    <span class="keyword">return</span> {
+        <span class="comment">// Override base class `method1`</span>
+        method1: <span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>
+            <span class="comment">// Call the parent method</span>
+            base.method1.call(<span class="keyword">this</span>);
+        },
+        scare: <span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>
+            console.log(<span class="string">'Dog::I scare you'</span>);
+        }
+    }
+});</code></pre>
+<h2 id='mixin'>Mixin</h2 id='mixin'>
+<h3 id='mixin/usage'>Usage</h3 id='mixin/usage'>
+<p><code>[[constructor]].mixin( function1, function2, ... )</code>
+
+</p>
+<pre><code class="javascript"><span class="comment">// Animal base class</span>
+<span class="keyword">var</span> Foo = Class.extend(<span class="function"><span class="keyword">function</span><span class="params">(base)</span> {</span>
+    <span class="keyword">return</span> {
+        method1: <span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>}
+    }
+});
+
+<span class="keyword">var</span> f = <span class="keyword">new</span> Foo();
+f.method1();
+
+Foo.mixin(<span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+    <span class="keyword">return</span>  {
+        method2: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>}
+    }
+});
+
+f.method2();</code></pre>
+<h2 id='decorators'>Decorators</h2 id='decorators'>
+<h3 id='decorators/usage'>Usage</h3 id='decorators/usage'>
+<p><code>Class.decorate( instance, function1, function2, ... )</code>
+
+</p>
+<pre><code class="javascript"><span class="function"><span class="keyword">function</span> <span class="title">CarWithPowerWindows</span><span class="params">()</span> {</span>
+}
+<span class="function"><span class="keyword">function</span> <span class="title">CarWithLeaterSeats</span><span class="params">()</span> {</span>
+}
+
+Class.decorate(myCar, CarWithPowerWindows, CarWithLeaterSeats);</code></pre>
+<h2 id='proxy'>Proxy</h2 id='proxy'>
+<h3 id='proxy/usage'>Usage</h3 id='proxy/usage'>
+<p><code>Class.proxy( base, instance )</code>
+
+</p>
+<pre><code class="javascript"><span class="comment">// Extend the Animal class;</span>
+<span class="keyword">var</span> Dog = Animal.extend(<span class="function"><span class="keyword">function</span><span class="params">(base)</span> {</span>
+    <span class="keyword">return</span> {
+        init: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+            <span class="keyword">this</span>.base = Class.proxy(base, <span class="keyword">this</span>);
+            <span class="keyword">this</span>.base.init();
+        }
+    }
+});</code></pre>
+
+  </div>
+</div></body>
+</html>
