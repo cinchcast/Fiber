@@ -1,5 +1,7 @@
 # Fiber.js
 
+JavaScript Inheritance Model
+
 ## Inheritance
 
 ### Usage

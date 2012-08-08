@@ -5,16 +5,11 @@
 </head>
 <body>
 <script>
+
 // EXAMPLES
 
-//Class = 2;
-
-Ccc = fiber.noConflict();
-
-console.log('here', Ccc);
-
 // Animal base
-var Animal = Ccc.extend(function(base) {
+var Animal = Fiber.extend(function(base) {
 
     return {
         // The `init` method serves as the constructor.
@@ -36,18 +31,18 @@ var Animal = Ccc.extend(function(base) {
     }
 });
 
-// Extend the Animal Ccc;
+// Extend the Animal class;
 var Dog = Animal.extend(function(base) {
     return {
         init: function() {
             console.log('DEATH');
-            this.base = Ccc.proxy(this);
+            this.base = Fiber.proxy(this);
 
             this.result = 123;
             // Call the base init.
             base.init.call(this);
         },
-        // Override base Ccc `method1`
+        // Override base class `method1`
         method1: function(){
            this.base.method1('hello');
            this.method2();
@@ -82,7 +77,7 @@ var husky = new Dog();
 husky.scare(); // "Dog::I scare you'"
 husky.s = 1;
 
-Ccc.decorate(husky, function(base) {
+Fiber.decorate(husky, function(base) {
     this.blah = 1;
 
   return {
@@ -103,14 +98,9 @@ console.log('constructor', husky.constructor.__base);
 husky.scream();
 husky.blah;
 
-Ccc.mixin(Dog, mix2);
+Fiber.mixin(Dog, mix2);
 
 husky.something2();
-
-//console.dir(Ccc);
-
-//husky.init();
-//husky.something2();
 
 
 </script>
