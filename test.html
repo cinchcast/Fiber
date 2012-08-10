@@ -102,6 +102,34 @@ Fiber.mixin(Dog, mix2);
 
 husky.something2();
 
+function dec(base) {
+    this.greet = function() {
+        this.hi();
+    }
+}
+
+var Parent = Fiber.extend(function() {
+    return {
+        init: function() {
+            console.log('die');
+        },
+        hi: function() {
+            console.log('hi');
+        }
+    }
+});
+
+var Child = Parent.extend(function(base) {
+    return {
+        init: function() {
+            base.init.call(this);
+            Fiber.decorate(this, dec);
+        }
+    }
+});
+
+var c = new Child();
+c.greet();
 
 </script>
 </body>

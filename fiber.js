@@ -17,23 +17,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-( function( global ){
+( function( global ) {
   // Stores whether the object is being initialized. i.e., whether
   // to run the `init` function, or not.
   var initializing = false,
 
   // Keep a few prototype references around - for speed access,
   // and saving bytes in the minified version.
-    ArrayProto = Array.prototype;
+    ArrayProto = Array.prototype,
 
   // Save the previous value of 'Fiber'.
     previousFiber = global.Fiber;
 
   // Copies properties from one object to the other
-  function copy(from, to) {
+  function copy( from, to ) {
     var name;
-    for( name in from ){
-      if( from.hasOwnProperty( name ) ){
+    for( name in from ) {
+      if( from.hasOwnProperty( name ) ) {
         to[name] = from[name];
       }
     }
@@ -43,7 +43,7 @@
   function Fiber(){};
 
   // Create a new Fiber that inherits from this class
-  Fiber.extend = function( fn ){
+  Fiber.extend = function( fn ) {
     // Keep a reference to the current prototye
     var parent = this.prototype,
 
@@ -57,7 +57,7 @@
 
     // The constructor function for the new subclass
     function child(){
-      if( !initializing && typeof this.init === 'function' ){
+      if( !initializing ){
         // All construction is done in the init method
         this.init.apply( this, arguments );
         // Prevent any re-initializing of the instance
@@ -70,6 +70,9 @@
     initializing = true;
     proto = child.prototype = new this;
     initializing = false;
+
+    // Add default `init` function, which subclass may override
+    proto.init = function(){};
 
      // Copy the properties over onto the new prototype
     copy( properties, proto );
@@ -125,14 +128,6 @@
     }
     return iface;
   };
-
-  function augment(obj, base , list) {
-    var i, len = args.length;
-
-    for( i = 0; i < len; i++ ){
-      copy( list[i]( base ), obj );
-    }
-  }
 
   /**
    * @purpose Decorate an instance with given decorator(s)
@@ -219,15 +214,14 @@
   };
 
    // Export the Fiber object to Common JS Loader
-  if( typeof module !== 'undefined' ){
-    if( typeof module.setExports === 'function' ){
+  if( typeof module !== 'undefined' ) {
+    if( typeof module.setExports === 'function' ) {
       module.setExports( Fiber );
-    } else if( module.exports ){
+    } else if( module.exports ) {
       module.exports = Fiber;
     }
   } else {
     global.Fiber = Fiber;
   }
-
 
 })( this );
